@@ -30,7 +30,7 @@ func (app *application) showMovieHandler(w http.ResponseWriter, r *http.Request)
 		CreatedAt: time.Now(),
 		Tittle:    "BlackHawkDown",
 		Year:      2003,
-		Runtime:   007,
+		Runtime:   102,
 		Genres:    []string{"drama", "conflict", "war", "army"},
 		Version:   1,
 	}
