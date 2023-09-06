@@ -21,7 +21,8 @@ func (app *application) showMovieHandler(w http.ResponseWriter, r *http.Request)
 	// Use Method readIDParams(r) to extract "id" Parameter from URL
 	id, err := app.readIDParams(r)
 	if err != nil {
-		http.NotFound(w, r)
+		// Use the new notFoundResponse() helper
+		app.notFoundResponse(w, r)
 		return
 	}
 
@@ -37,12 +38,7 @@ func (app *application) showMovieHandler(w http.ResponseWriter, r *http.Request)
 
 	err = app.writeJSON(w, http.StatusOK, envelope{"movie": movie}, nil)
 	if err != nil {
-		app.logger.Println(err)
-		http.Error(
-			w,
-			"the server encountered a problem and could not process your request",
-			http.StatusInternalServerError,
-		)
-
+		// Use The new serverErrorResponse() helper
+		app.serverErrorResponse(w, r, err)
 	}
 }
