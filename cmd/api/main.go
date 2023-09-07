@@ -17,11 +17,16 @@ const version = "1.0.0"
 
 // Add a db struct field to hold the configuration settings for our database connection
 // pool. For now this only holds the DSN, which we will read in from a command-line flag.
+// Add maxOpenConns, maxIdleConns and maxIdleTime fields to hold the configuration
+// settings for the connection pool.
 type config struct {
 	port int
 	env  string
 	db   struct {
-		dsn string
+		dsn          string
+		maxOpenConns int
+		maxIdleCoons int
+		maxIdleTime  string
 	}
 }
 
@@ -31,7 +36,6 @@ type application struct {
 }
 
 func main() {
-	// Declare an instance of the config struct.
 	var cfg config
 
 	// Read the value of the port and env command-line flags into the config struct. We
@@ -49,6 +53,18 @@ func main() {
 		"postgres://twentyone:secret@localhost/twenty_one?sslmode=disable",
 		"Postgresql DSN",
 	)
+
+	// Read the connection pool settings from command-line flags into the config struct.
+	// Notice the default values that we're using?
+	flag.IntVar(&cfg.db.maxOpenConns, "db-max-open-conns", 25, "Postgresql max open connections")
+	flag.IntVar(&cfg.db.maxIdleCoons, "db-max-idle-conns", 25, "Postgresql max idle connections")
+	flag.StringVar(
+		&cfg.db.maxIdleTime,
+		"db-max-idle-Time",
+		"15m",
+		"Postgresql max connections idle time",
+	)
+
 	flag.Parse()
 
 	// Initialize a new logger which writes messages to the standard out stream,
@@ -103,6 +119,23 @@ func openDB(cfg config) (*sql.DB, error) {
 	if err != nil {
 		return nil, err
 	}
+	// Set the maximum number of open (in-use + idle) connections in the pool. Note that
+	// passing a value less than or equal to 0 will mean there is no limit.
+	db.SetMaxOpenConns(cfg.db.maxOpenConns)
+
+	// Set the maximum number of idle connections in the pool. Again, passing a value
+	// less than or equal to 0 will mean there is no limit.
+	db.SetMaxIdleConns(cfg.db.maxIdleCoons)
+
+	// Use the time.ParseDuration() function to convert the idle timeout duration string
+	// to a time.Duration type.
+	duration, err := time.ParseDuration(cfg.db.maxIdleTime)
+	if err != nil {
+		return nil, err
+	}
+
+	// Set Maximun idle timeout
+	db.SetConnMaxIdleTime(duration)
 
 	// Create a context with a 5-second timeout deadline.
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
