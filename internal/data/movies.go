@@ -1,6 +1,7 @@
 package data
 
 import (
+	"database/sql"
 	"time"
 
 	"github.com/Ramdoni007/21Cinema/internal/validator"
@@ -14,6 +15,30 @@ type Movie struct {
 	Runtime   Runtime   `json:"runtime"`
 	Genres    []string  `json:"genres,omitempty"`
 	Version   int32     `json:"version"`
+}
+
+// Define a MovieModel struct type which wraps a sql.DB connection pool.
+type MovieModel struct {
+	DB *sql.DB
+}
+
+// Add a placeholder method for inserting a new record in the movies table.
+func (m MovieModel) Insert(movie *Movie) error {
+	return nil
+}
+
+// Add a placeholder method for fetching a specific record from the movies table
+func (m MovieModel) Get(id int64) (*Movie, error) {
+	return nil, nil
+}
+
+// Add a placeholder method for updating a specific record in the movies table.
+func (m MovieModel) Update(movie *Movie) error {
+	return nil
+}
+
+// Add a placeholder method for deleting a specific record from the movies table.
+func (m MovieModel) Delete(id int64) {
 }
 
 // Passing Validation check to func ValidateMovie

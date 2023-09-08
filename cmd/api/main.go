@@ -11,6 +11,8 @@ import (
 	"time"
 
 	_ "github.com/lib/pq"
+
+	"github.com/Ramdoni007/21Cinema/internal/data"
 )
 
 const version = "1.0.0"
@@ -19,6 +21,7 @@ const version = "1.0.0"
 // pool. For now this only holds the DSN, which we will read in from a command-line flag.
 // Add maxOpenConns, maxIdleConns and maxIdleTime fields to hold the configuration
 // settings for the connection pool.
+// Add a models field to hold our new Models struct.
 type config struct {
 	port int
 	env  string
@@ -33,6 +36,7 @@ type config struct {
 type application struct {
 	config config
 	logger *log.Logger
+	models data.Models
 }
 
 func main() {
@@ -89,9 +93,12 @@ func main() {
 
 	// Declare an instance of the application struct, containing the config struct and
 	// the logger
+	// Use the data.NewModels() function to initialize a Models struct, passing in the
+	// connection pool as a paramete
 	app := &application{
 		config: cfg,
 		logger: logger,
+		models: data.NewModel(db),
 	}
 
 	//// Declare  HTTP server with some sensible timeout settings, which listens on the
