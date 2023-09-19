@@ -1,6 +1,6 @@
 module github.com/Ramdoni007/21Cinema
 
-go 1.18
+go 1.21.0
 
 require github.com/julienschmidt/httprouter v1.3.0
 
