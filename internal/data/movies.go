@@ -41,11 +41,11 @@ func (m MovieModel) Insert(movie *Movie) error {
 	// make it nice and clear *what values are being used where* in the query.
 	args := []interface{}{movie.Title, movie.Year, movie.Runtime, pq.Array(movie.Genres)}
 
-	ctx, cance := context.WithTimeout(context.Background(), 3*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 
-	defer cance()
+	defer cancel()
 
-	// Use the QueryRow() method to execute the SQL query on our connection pool,
+	// Use the QueryRowContext() method to execute the SQL query and ctx context Method on our connection pool,
 	// passing in the args slice as a variadic parameter and scanning the system-
 	// generated id, created_at and version values into the movie struct.
 	return m.DB.QueryRowContext(ctx, query, args...).
