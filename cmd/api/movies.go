@@ -230,7 +230,6 @@ func (app *application) deleteMovieHandler(w http.ResponseWriter, r *http.Reques
 	}
 }
 
-// Update the function signature to return a Metadata struct.
 func (app *application) listMovieHandler(w http.ResponseWriter, r *http.Request) {
 	// Update the SQL query to include the window function which counts the total
 	// (filtered) records.
