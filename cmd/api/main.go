@@ -49,7 +49,7 @@ func main() {
 	// default to using the port number 4000 and the environment "development" if no
 	// corresponding flags are provided.
 	flag.IntVar(&cfg.port, "port", 4000, "API server port")
-	flag.StringVar(&cfg.env, "env", "development ", "Environment (development|staging|production)")
+	flag.StringVar(&cfg.env, "env", "development", "Environment (development|staging|production)")
 
 	// Read the DSN value from the db-dsn command-line flag into the config struct. We
 	// default to using our development DSN if no flag is provided.
@@ -120,7 +120,7 @@ func main() {
 	// Again, we use the PrintInfo() method to write a "starting server" message at the
 	// INFO level. But this time we pass a map containing additional properties (the
 	// operating environment and server address) as the final parameter.
-	logger.PrintInfo("starting  server ", map[string]string{
+	logger.PrintInfo("Server successfully Start", map[string]string{
 		"addr": srv.Addr,
 		"env":  cfg.env,
 	})

@@ -197,7 +197,11 @@ func (m MovieModel) Delete(id int64) error {
 }
 
 // Update the function signature to return a Metadata struct.
-func (m MovieModel) GetAll(title string, genres []string, filters Filters) ([]*Movie, Metadata, error) {
+func (m MovieModel) GetAll(
+	title string,
+	genres []string,
+	filters Filters,
+) ([]*Movie, Metadata, error) {
 	// Update the SQL query to include the LIMIT and OFFSET clauses with placeholder
 	// parameter values.
 	query := fmt.Sprintf(`
