@@ -6,7 +6,7 @@ import (
 	"github.com/julienschmidt/httprouter"
 )
 
-func (app *application) routes() *httprouter.Router {
+func (app *application) routes() http.Handler {
 	// Initialize a new httprouter router instance
 	router := httprouter.New()
 
@@ -30,5 +30,5 @@ func (app *application) routes() *httprouter.Router {
 	router.HandlerFunc(http.MethodDelete, "/v1/movies/:id", app.deleteMovieHandler)
 	router.HandlerFunc(http.MethodGet, "/v1/movies", app.listMovieHandler)
 	// Return the httprouter instance
-	return router
+	return app.recoverPanic(router)
 }
