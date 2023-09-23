@@ -196,24 +196,36 @@ func (m MovieModel) Delete(id int64) error {
 	return nil
 }
 
-func (m MovieModel) GetAll(title string, genres []string, filters Filters) ([]*Movie, error) {
+// Update the function signature to return a Metadata struct.
+func (m MovieModel) GetAll(title string, genres []string, filters Filters) ([]*Movie, Metadata, error) {
+	// Update the SQL query to include the LIMIT and OFFSET clauses with placeholder
+	// parameter values.
 	query := fmt.Sprintf(`
-    SELECT id,created_at,title,year,runtime,genres,version
+    SELECT count(*) OVER(), id,created_at,title,year,runtime,genres,version
     FROM movies
     WHERE (to_tsvector('simple',title) @@ plainto_tsquery('simple',$1)OR $1 = '')
     AND (genres @> $2 OR $2 = '{}')
-    ORDER BY %s %s, id ASC `, filters.sortColumn(), filters.sortDirection())
+    ORDER BY %s %s, id ASC 
+    LIMIT $3 OFFSET $4`, filters.sortColumn(), filters.sortDirection())
 
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 
-	rows, err := m.DB.QueryContext(ctx, query, title, pq.Array(genres))
+	// As our SQL query now has quite a few placeholder parameters, let's collect the
+	// values for the placeholders in a slice. Notice here how we call the limit() and
+	// offset() methods on the Filters struct to get the appropriate values for the
+	// LIMIT and OFFSET clauses.
+	args := []interface{}{title, pq.Array(genres), filters.limit(), filters.offset()}
+
+	rows, err := m.DB.QueryContext(ctx, query, args...)
 	if err != nil {
-		return nil, err
+		return nil, Metadata{}, err // Update this to return an empty Metadata struct.
 	}
 
 	defer rows.Close()
 
+	// DeclareTotal Records variable
+	totalRecords := 0
 	movies := []*Movie{}
 
 	for rows.Next() {
@@ -221,6 +233,7 @@ func (m MovieModel) GetAll(title string, genres []string, filters Filters) ([]*M
 		var movie Movie
 
 		err := rows.Scan(
+			&totalRecords, // Scan the count from the windows function into totalRecords
 			&movie.ID,
 			&movie.CreatedAt,
 			&movie.Title,
@@ -230,17 +243,20 @@ func (m MovieModel) GetAll(title string, genres []string, filters Filters) ([]*M
 			&movie.Version,
 		)
 		if err != nil {
-			return nil, err
+			return nil, Metadata{}, err // Update this to return an empty Metadata struct.
 		}
 		movies = append(movies, &movie)
-
-		if err = rows.Err(); err != nil {
-			return nil, err
-		}
-
 	}
 
-	return movies, nil
+	if err = rows.Err(); err != nil {
+		return nil, Metadata{}, err // Update this to return an empty Metadata struct
+	}
+	// Generate a Metadata struct, passing in the total record count and pagination
+	// parameters from the client.
+	metadata := calculateMetaData(totalRecords, filters.Page, filters.PageSize)
+
+	// Include the metadata struct when returning.
+	return movies, metadata, nil
 }
 
 // Passing Validation check to func ValidateMovie
