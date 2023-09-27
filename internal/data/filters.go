@@ -8,13 +8,13 @@ import (
 )
 
 type Filters struct {
-	Page        int
-	PageSize    int
-	Sort        string
-	SortSfeList []string
+	Page         int
+	PageSize     int
+	Sort         string
+	SortsafeList []string
 }
 
-// Define a new Metadata struct for holding the pagination metadata.
+// define a new metadata struct for holding the pagination metadata.
 type Metadata struct {
 	CurrentPage  int `json:"current_page,omitempty"`
 	PageSize     int `json:"page_size,omitempty"`
@@ -46,15 +46,14 @@ func calculateMetaData(totalrecords, page, pageSize int) Metadata {
 func ValidateFilters(v *validator.Validator, f Filters) {
 	v.Check(f.Page > 0, "page", "page must be greater than zero")
 
-	v.Check(f.Page <= 10_000_000, "page", "page must be maximum than 10 millions")
 	v.Check(f.Page > 0, "page_size", "page_size must be greater than zero")
 	v.Check(f.Page <= 100, "page_size", "page_size must be greater than a maximum 100")
 
-	v.Check(validator.In(f.Sort, f.SortSfeList...), "sort", "invalid sort value")
+	v.Check(validator.In(f.Sort, f.SortsafeList...), "sort", "invalid sort value")
 }
 
 func (f Filters) sortColumn() string {
-	for _, safeValue := range f.SortSfeList {
+	for _, safeValue := range f.SortsafeList {
 		if f.Sort == safeValue {
 			return strings.TrimPrefix(f.Sort, "-")
 		}

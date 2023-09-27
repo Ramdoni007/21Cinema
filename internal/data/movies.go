@@ -22,7 +22,7 @@ type Movie struct {
 	Version   int32     `json:"version"`
 }
 
-// Define a MovieModel struct type which wraps a sql.DB connection pool.
+// Define a MovieModel struct with type which wraps a sql.DB connection pool.
 type MovieModel struct {
 	DB *sql.DB
 }

@@ -109,7 +109,7 @@ func main() {
 	// Declare an instance of the application struct, containing the config struct and
 	// the logger
 	// Use the data.NewModels() function to initialize a Models struct, passing in the
-	// connection pool as a paramete
+	// connection pool as a parameter
 	app := &application{
 		config: cfg,
 		logger: logger,
@@ -122,7 +122,7 @@ func main() {
 
 }
 
-// The openDB() function returns a sql.DB connection pool.
+// The openDatabase() function returns a sql.DB connection pool.
 func openDB(cfg config) (*sql.DB, error) {
 	// Use sql.Open() to create an empty connection pool, using the DSN from the config
 	// struct.
@@ -154,7 +154,7 @@ func openDB(cfg config) (*sql.DB, error) {
 
 	// Use PingContext() to establish a new connection to the database, passing in the
 	// context we created above as a parameter. If the connection couldn't be
-	// established successfully within the 5 second deadline, then this will return an
+	// established successfully within the 5 s deadline, then this will return an
 	// error.
 	err = db.PingContext(ctx)
 	if err != nil {
