@@ -1,3 +1,4 @@
+// this jsonlog for logger highLevel Concept:)
 package jsonlog
 
 import (
