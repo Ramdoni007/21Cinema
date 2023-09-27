@@ -2,6 +2,7 @@ package main
 
 import (
 	"net/http"
+	"time"
 )
 
 func (app *application) healthcheckHandler(w http.ResponseWriter, r *http.Request) {
@@ -15,6 +16,7 @@ func (app *application) healthcheckHandler(w http.ResponseWriter, r *http.Reques
 			"version":     version,
 		},
 	}
+	time.Sleep(4 * time.Second)
 
 	// writeJSON Creating a writeJSON helper method with helpers.go
 	err := app.writeJSON(w, http.StatusOK, env, nil)
