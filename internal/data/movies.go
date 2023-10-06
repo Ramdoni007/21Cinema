@@ -55,7 +55,7 @@ func (m MovieModel) Insert(movie *Movie) error {
 
 // Add a placeholder method for fetching a specific record from the movies table
 func (m MovieModel) Get(id int64) (*Movie, error) {
-	// The PostgreSQL bigserial type that we're using for the movie ID starts
+	// The PostgresSQL bigserial type that we're using for the movie ID starts
 	// auto-incrementing at 1 by default, so we know that no movies will have ID values
 	// less than that. To avoid making an unnecessary database call, we take a shortcut
 	// and return an ErrRecordNotFound error straight away.

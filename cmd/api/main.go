@@ -17,7 +17,7 @@ const version = "1.0.0"
 
 // Add a db struct field to hold the configuration settings for our database connection
 // pool. For now this only holds the DSN, which we will read in from a command-line flag.
-// Add maxOpenConns, maxIdleConns and maxIdleTime fields to hold the configuration
+// Add maxOpenCoons, maxIdleCoons and maxIdleTime fields to hold the configuration
 // settings for the connection pool.
 // Add a models field to hold our new Models struct.
 type config struct {
@@ -29,7 +29,7 @@ type config struct {
 		maxIdleCoons int
 		maxIdleTime  string
 	}
-	// Add a new limiter struct containing fields for the requests-per-second and burst
+	// Add a new limite struct containing fields for the requests-per-second and burst
 	// values, and a boolean field which we can use to enable/disable rate limiting
 	// altogether.
 	limiter struct {

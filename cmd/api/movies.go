@@ -3,13 +3,12 @@ package main
 import (
 	"errors"
 	"fmt"
-	"net/http"
-
 	"github.com/Ramdoni007/21Cinema/internal/data"
 	"github.com/Ramdoni007/21Cinema/internal/validator"
+	"net/http"
 )
 
-// Add a createMovieHandler for the "POST /v1/movies" endpoint. For now we simply
+// Add a createMovieHandler for the "POST /v1/movies" endpoint. For now, we simply
 // return a plain-text placeholder response.
 func (app *application) createMovieHandler(w http.ResponseWriter, r *http.Request) {
 	var input struct {
@@ -56,7 +55,7 @@ func (app *application) createMovieHandler(w http.ResponseWriter, r *http.Reques
 
 	}
 
-	// When sending a HTTP response, we want to include a Location header to let the
+	// When sending HTTP response, we want to include a Location header to let the
 	// client know which URL they can find the newly-created resource at. We make an
 	// empty http.Header map and then use the Set() method to add a new Location header,
 	// interpolating the system-generated ID for our new movie in the URL.
@@ -132,7 +131,7 @@ func (app *application) updateMovieHandler(w http.ResponseWriter, r *http.Reques
 	}
 
 	// Declare an input struct to hold the expected data from the client.
-	// Use pointers for the Title, Year and Runtime fields. for Partial spesific update API response
+	// Use pointers for the Title, Year and Runtime fields. for Partial specific update API response
 	var input struct {
 		Title   *string       `json:"title"`
 		Year    *int32        `json:"year"`
@@ -251,7 +250,7 @@ func (app *application) listMovieHandler(w http.ResponseWriter, r *http.Request)
 	input.Filters.PageSize = app.readInt(qs, "page_size", 20, v)
 	input.Filters.Sort = app.readString(qs, "sort", "id")
 
-	input.Filters.SortSfeList = []string{"id", "title", "year", "runtime", "-id", "-title", "-year", "-runtime"}
+	input.Filters.SortsafeList = []string{"id", "title", "year", "runtime", "-id", "-title", "-year", "-runtime"}
 
 	if data.ValidateFilters(v, input.Filters); !v.Valid() {
 
